@@ -18,10 +18,13 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class Jogo extends Application {
-    public static final int CELL_WIDTH = 20;
-    public static final int CELL_HEIGHT = 20;
+    public static final int CELL_WIDTH = 40;
+    public static final int CELL_HEIGHT = 40;
     public static final int NLIN = 10;
     public static final int NCOL = 10;
+
+    public static final int QTD_ZUMBI_BEBAD0 = 5;
+    public static final int QTD_ZUMBI_DA_PAZ = 2;
 
     public static Jogo jogo = null;
 
@@ -63,7 +66,7 @@ public class Jogo extends Application {
         aux = new Image("file:Imagens\\img2.jpg");
         imagens.put("Infectado", aux);
         aux = new Image("file:Imagens\\img8.jpg");
-        imagens.put("Zumbi", aux);
+        imagens.put("ZumbiBebado", aux);
         aux = new Image("file:Imagens\\img6.jpg");
         imagens.put("Morto", aux);
         aux = new Image("file:Imagens\\back.jpg");
@@ -103,8 +106,8 @@ public class Jogo extends Application {
         // Cria a lista de personagens
         personagens = new ArrayList<>(NLIN*NCOL);
         
-        // Cria 10 boboes aleatorios
-        for(int i=0;i<10;i++){
+        // Cria x zumbis da paz aleatorios
+        for(int i=0;i< QTD_ZUMBI_DA_PAZ; i++){
             // Lembrte: quando um personagem é criado ele se vincula
             // automaticamente na célula indicada nos parametros
             // linha e coluna (ver o construtor de Personagem)
@@ -119,14 +122,14 @@ public class Jogo extends Application {
             }
         }
 
-        // Cria 5 Zumbis aleatórios
-        for(int i=0;i<5;i++){
+        // Cria 5 Zumbis bebados aleatórios
+        for(int i=0;i< QTD_ZUMBI_BEBAD0 ;i++){
             boolean posOk = false;
             while(!posOk){
                 int lin = random.nextInt(NLIN);
                 int col = random.nextInt(NCOL);
                 if (this.getCelula(lin, col).getPersonagem() == null){
-                    personagens.add(new Zumbi(lin,col));
+                    personagens.add(new ZumbiBebado(lin,col));
                     posOk = true;
                 }
             }
