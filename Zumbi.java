@@ -1,6 +1,6 @@
-public class Zumbi extends Personagem {
-    public Zumbi(int linInicial,int colInicial){
-        super(10,"Zumbi",linInicial,colInicial);
+public abstract class Zumbi extends Personagem {
+    public Zumbi(String imagemInicial, int linInicial,int colInicial){
+        super(ImagemInicial,linInicial,colInicial);
     }
 
     @Override
