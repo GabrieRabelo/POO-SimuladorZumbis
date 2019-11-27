@@ -1,6 +1,6 @@
-public abstract class Zumbi extends Personagem {
+public abstract class Zumbi extends ObjetoCelula {
     public Zumbi(String imagemInicial, int linInicial,int colInicial){
-        super(ImagemInicial,linInicial,colInicial);
+        super(imagemInicial,linInicial,colInicial);
     }
 
     @Override
@@ -15,17 +15,16 @@ public abstract class Zumbi extends Personagem {
         if (lin >= Jogo.NLIN) lin = Jogo.NLIN-1;
         if (col < 0) col = 0;
         if (col >= Jogo.NCOL) col = Jogo.NCOL-1;
-        if (Jogo.getInstance().getCelula(lin, col).getPersonagem() != null){
+        if (Jogo.getInstance().getCelula(lin, col).getObjetoCelula() != null){
             return;
         }else{
             // Limpa celula atual
-            Jogo.getInstance().getCelula(oldLin, oldCol).setPersonagem(null);
-            // Coloca personagem na nova posição
-            Jogo.getInstance().getCelula(lin, col).setPersonagem(this);
+            Jogo.getInstance().getCelula(oldLin, oldCol).setObjetoCelula(null);
+            // Coloca Objeto na nova posição
+            Jogo.getInstance().getCelula(lin, col).setObjetoCelula(this);
         }
     }
 
-    @Override
     public void influenciaVizinhos() {
         int lin = this.getCelula().getLinha();
         int col = this.getCelula().getColuna();
@@ -36,10 +35,10 @@ public abstract class Zumbi extends Personagem {
                     // Se não é a propria celula
                     if (!( lin == l && col == c)){
                         // Recupera o personagem da célula vizinha
-                        Personagem p = Jogo.getInstance().getCelula(l,c).getPersonagem();
+                        ObjetoCelula p = Jogo.getInstance().getCelula(l,c).getObjetoCelula();
                         // Se não for nulo, infecta
                         if (p != null){
-                            p.infecta();
+                            // p.infecta();
                         }
                     }
                 }

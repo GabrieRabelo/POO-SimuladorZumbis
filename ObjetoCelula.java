@@ -1,11 +1,10 @@
-public abstract class Personagem {
+public abstract class ObjetoCelula {
     private String imagem; // Identificador da imagem
-    // private int energia;
     private Celula celula;
 
-    public Personagem(String imagemInicial,int linInicial,int colInicial){
+    public ObjetoCelula(String imagemInicial,int linInicial,int colInicial){
         this.imagem = imagemInicial;
-        Jogo.getInstance().getCelula(linInicial, colInicial).setPersonagem(this);
+        Jogo.getInstance().getCelula(linInicial, colInicial).setObjetoCelula(this);
     }
 
     public String getImage(){
@@ -26,6 +25,8 @@ public abstract class Personagem {
 
     // Define próximo movimento
     public abstract void atualizaPosicao();
+    
+    public abstract void atualizaPosicao(Celula celula);
 
     // Verifica possiveis atualizações de estado a cada passo
     public abstract void verificaEstado();
@@ -33,5 +34,5 @@ public abstract class Personagem {
     // Define como o personagem influencia os vizinhos
     // Toda vez que chega em uma célula analisa os vizinhos
     // e influencia os mesmos
-    public abstract void influenciaVizinhos();
+    // public abstract void influenciaVizinhos();
 }

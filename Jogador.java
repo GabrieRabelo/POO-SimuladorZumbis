@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-public class Jogador extends Personagem {
+public class Jogador extends ObjetoCelula {
     private boolean imune;
     private boolean vivo;
     // private List<Item> inventario;
@@ -12,10 +12,6 @@ public class Jogador extends Personagem {
 
         // this.inventario = new ArrayList<>();
     }
-
-    // private void iniciaInventario() {
-    //     depois de criar os tipos de item.
-    // }
 
     public boolean estaImune(){
         return imune;
@@ -37,5 +33,20 @@ public class Jogador extends Personagem {
         if (!this.imune) {
             vivo = false;
         }
+    }
+
+    @Override
+    public void verificaEstado() {
+
+    }
+
+    @Override
+    public void atualizaPosicao() {
+
+    }
+
+    @Override
+    public void atualizaPosicao(Celula celula) {
+
     }
 }

@@ -1,21 +1,21 @@
 import javafx.scene.image.ImageView;
 
 public class Celula extends javafx.scene.control.Button {
-    private Personagem personagem;
+    private ObjetoCelula objetoCelula;
     private int linha;
     private int coluna;
 
     public Celula(int linha, int coluna){
         this.linha = linha;
         this.coluna = coluna;
-        personagem = null;
-        setImageFromPersonagem();
+        objetoCelula = null;
+        setImageFromObjetoCelula();
 
     }
 
-    public void setImageFromPersonagem(){
-        if (personagem != null){
-            String imagem = this.getPersonagem().getImage();
+    public void setImageFromObjetoCelula(){
+        if (objetoCelula != null){
+            String imagem = this.getObjetoCelula().getImage();
             ImageView iVaux = new ImageView(Jogo.getInstance().getImage(imagem));
             iVaux.setFitWidth(Jogo.CELL_WIDTH);
             iVaux.setFitHeight(Jogo.CELL_HEIGHT);
@@ -28,16 +28,16 @@ public class Celula extends javafx.scene.control.Button {
         }
     }
 
-    public Personagem getPersonagem() {
-        return personagem;
+    public ObjetoCelula getObjetoCelula() {
+        return objetoCelula;
     }
 
-    public void setPersonagem(Personagem personagem) {
-        this.personagem = personagem;
-        if (personagem != null){
-            personagem.setCelula(this);
+    public void setObjetoCelula(ObjetoCelula objetoCelula) {
+        this.objetoCelula = objetoCelula;
+        if (objetoCelula != null){
+            objetoCelula.setCelula(this);
         }
-        setImageFromPersonagem();
+        setImageFromObjetoCelula();
     }
 
     public int getLinha() {

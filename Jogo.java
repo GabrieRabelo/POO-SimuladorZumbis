@@ -28,7 +28,7 @@ public class Jogo extends Application {
     private Random random;
     private Map<String, Image> imagens;
     private List<Celula> celulas;
-    private List<Personagem> personagens;
+    private List<ObjetoCelula> objetoCelulas;
 
     public static Jogo getInstance(){
         return jogo;
@@ -57,7 +57,7 @@ public class Jogo extends Application {
     private void loadImagens() {
         imagens = new HashMap<>();
 
-        // Armazena as imagens dos personagens
+        // Armazena as imagens dos ObjetoCelulas
         Image aux = new Image("file:Imagens\\img1.jpg");
         imagens.put("Normal", aux);
         aux = new Image("file:Imagens\\img2.jpg");
@@ -100,33 +100,28 @@ public class Jogo extends Application {
             }
         }
 
-        // Cria a lista de personagens
-        personagens = new ArrayList<>(NLIN*NCOL);
         
-        // Cria 10 boboes aleatorios
-        for(int i=0;i<10;i++){
-            // Lembrte: quando um personagem é criado ele se vincula
-            // automaticamente na célula indicada nos parametros
-            // linha e coluna (ver o construtor de Personagem)
-            boolean posOk = false;
-            while(!posOk){
-                int lin = random.nextInt(NLIN);
-                int col = random.nextInt(NCOL);
-                if (this.getCelula(lin, col).getPersonagem() == null){
-                    personagens.add(new Bobao(lin,col));
-                    posOk = true;
-                }
+        objetoCelulas = new ArrayList<>(NLIN*NCOL);
+        
+        //cria e posiciona o jogador protagonista.
+        boolean posOk = false;
+        while(!posOk){
+            int lin = random.nextInt(NLIN);
+            int col = random.nextInt(NCOL);
+            if (this.getCelula(lin, col).getObjetoCelula() == null){
+                objetoCelulas.add(new Jogador(lin,col));
+                posOk = true;
             }
         }
 
-        // Cria 5 Zumbis aleatórios
+        // Cria 5 Zumbis Bebados aleatorios
         for(int i=0;i<5;i++){
-            boolean posOk = false;
+            posOk = false;
             while(!posOk){
                 int lin = random.nextInt(NLIN);
                 int col = random.nextInt(NCOL);
-                if (this.getCelula(lin, col).getPersonagem() == null){
-                    personagens.add(new Zumbi(lin,col));
+                if (this.getCelula(lin, col).getObjetoCelula() == null){
+                    objetoCelulas.add(new ZumbiBebado(lin,col));
                     posOk = true;
                 }
             }
@@ -150,17 +145,17 @@ public class Jogo extends Application {
     }
 
     public void avancaSimulacao(){
-        // Avança um passo em todos os personagens
-        personagens.forEach(p->{
+        // Avança um passo em todos os objetoCelulas
+        objetoCelulas.forEach(p->{
             p.atualizaPosicao();
             p.verificaEstado();
-            p.influenciaVizinhos();
+            // p.influenciaVizinhos();
         });
         // Verifica se o jogo acabou
-        long vivos = personagens
+        long vivos = objetoCelulas
                     .stream()
                     .filter(p->!(p instanceof Zumbi))
-                    .filter(p->p.estaVivo())
+                    // .filter(p->p.estaVivo())
                     .count();
         if (vivos == 0){
             Alert msgBox = new Alert(AlertType.INFORMATION);

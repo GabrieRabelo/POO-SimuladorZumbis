@@ -1,10 +1,18 @@
-public class Item {
-    private int id;
-    private String nome;
+public abstract class Item extends ObjetoCelula {
     private Celula celula;
+    private String imagem;
 
-    public Item(int id) {
-        this.id = id;
-        Jogo.getInstance().getCelula(linInicial, colInicial).setPersonagem(this);
+    public Item(String imagemInicial, int linInicial, int colInicial) {
+        super(imagemInicial, linInicial, colInicial);
+    }
+
+    @Override
+    public void verificaEstado() {
+
+    }
+
+    @Override
+    public void atualizaPosicao() {
+        
     }
 }

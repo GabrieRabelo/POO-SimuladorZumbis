@@ -18,13 +18,13 @@ public class ZumbiBebado extends Zumbi{
         if (lin >= Jogo.NLIN) lin = Jogo.NLIN-1;
         if (col < 0) col = 0;
         if (col >= Jogo.NCOL) col = Jogo.NCOL-1;
-        if (Jogo.getInstance().getCelula(lin, col).getPersonagem() != null){
+        if (Jogo.getInstance().getCelula(lin, col).getObjetoCelula() != null){
             return;
         }else{
             // Limpa celula atual
-            Jogo.getInstance().getCelula(oldLin, oldCol).setPersonagem(null);
-            // Coloca personagem na nova posição
-            Jogo.getInstance().getCelula(lin, col).setPersonagem(this);
+            Jogo.getInstance().getCelula(oldLin, oldCol).setObjetoCelula(null);
+            // Coloca objetoCelula na nova posição
+            Jogo.getInstance().getCelula(lin, col).setObjetoCelula(this);
         }
     }
 }
