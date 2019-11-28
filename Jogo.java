@@ -59,17 +59,18 @@ public class Jogo extends Application {
 
         // Armazena as imagens dos ObjetoCelulas
         Image aux = new Image("file:Imagens\\img1.jpg");
-        imagens.put("Normal", aux);
+        imagens.put("Jogador", aux);
         aux = new Image("file:Imagens\\img2.jpg");
-        imagens.put("Infectado", aux);
-        aux = new Image("file:Imagens\\img8.jpg");
-        imagens.put("Zumbi", aux);
-        aux = new Image("file:Imagens\\img6.jpg");
-        imagens.put("Morto", aux);
-        aux = new Image("file:Imagens\\back.jpg");
-        imagens.put("Vazio", aux);
+        imagens.put("ZumbiBebado", aux);
 
-        // Armazena a imagem da celula ula
+        aux = new Image("file:Imagens\\img8.jpg");
+        imagens.put("ZumbiDaPaz", aux);
+        aux = new Image("file:Imagens\\img6.jpg");
+        imagens.put("Corote", aux);
+        aux = new Image("file:Imagens\\back.jpg");
+        imagens.put("Glacial", aux);
+
+        // Armazena a imagem da celula nula
         imagens.put("Null", null);
     }
 

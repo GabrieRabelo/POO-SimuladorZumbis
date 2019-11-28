@@ -3,7 +3,7 @@ import java.util.List;
 public class Jogador extends ObjetoCelula {
     private boolean imune;
     private boolean vivo;
-    // private List<Item> inventario;
+    private List<Item> inventario;
 
     public Jogador(int linInicial, int colInicial) {
         super("Jogador", linInicial, colInicial);
@@ -36,17 +36,13 @@ public class Jogador extends ObjetoCelula {
     }
 
     @Override
-    public void verificaEstado() {
-
-    }
+    public void verificaEstado() {}
 
     @Override
     public void atualizaPosicao() {
-
+        //talvez dependa da implementação das setas
     }
 
     @Override
-    public void atualizaPosicao(Celula celula) {
-
-    }
+    public void atualizaPosicao(Celula celula) {}
 }
