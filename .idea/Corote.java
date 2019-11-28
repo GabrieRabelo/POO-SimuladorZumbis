@@ -1,0 +1,7 @@
+/**
+ * Corote
+ */
+public class Corote {
+
+    
+}

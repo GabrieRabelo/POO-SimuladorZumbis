@@ -7,6 +7,10 @@ public abstract class ObjetoCelula {
         Jogo.getInstance().getCelula(linInicial, colInicial).setObjetoCelula(this);
     }
 
+    public ObjetoCelula(String imagemInicial){
+        this.imagem = imagemInicial;
+    }
+
     public String getImage(){
         return imagem;
     }
