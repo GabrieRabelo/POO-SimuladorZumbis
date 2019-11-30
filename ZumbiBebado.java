@@ -5,26 +5,32 @@ public class ZumbiBebado extends Zumbi{
 
     @Override
     public void atualizaPosicao(Celula celula) {
-        int linha = celula.getLinha();
-        int coluna = celula.getColuna();
+        int linTo = celula.getLinha();
+        int colTo = celula.getColuna();
 
-        int dirLin = Jogo.getInstance().aleatorio(3)-1;
-        int dirCol = Jogo.getInstance().aleatorio(3)-1;
         int oldLin = this.getCelula().getLinha();
         int oldCol = this.getCelula().getColuna();
-        int lin = oldLin + dirLin;
-        int col = oldCol + dirCol;
-        if (lin < 0) lin = 0;
-        if (lin >= Jogo.NLIN) lin = Jogo.NLIN-1;
-        if (col < 0) col = 0;
-        if (col >= Jogo.NCOL) col = Jogo.NCOL-1;
-        if (Jogo.getInstance().getCelula(lin, col).getObjetoCelula() != null){
+
+        int newLin = oldLin;
+        int newCol = oldCol;
+
+        if (linTo > oldLin) newLin = oldLin + 1;
+        else if (linTo < oldLin) newLin = oldLin - 1;
+
+        if (colTo > oldCol) newCol = oldCol + 1;            
+        else if (colTo < oldCol) newCol = oldCol - 1;
+
+        if (newLin < 0) newLin = 0;
+        if (newLin >= Jogo.NLIN) newLin = Jogo.NLIN-1;
+        if (newCol < 0) newCol = 0;
+        if (newCol >= Jogo.NCOL) newCol = Jogo.NCOL-1;
+        if (Jogo.getInstance().getCelula(newLin, newCol).getObjetoCelula() != null){
             return;
         }else{
             // Limpa celula atual
             Jogo.getInstance().getCelula(oldLin, oldCol).setObjetoCelula(null);
             // Coloca objetoCelula na nova posição
-            Jogo.getInstance().getCelula(lin, col).setObjetoCelula(this);
+            Jogo.getInstance().getCelula(newLin, newCol).setObjetoCelula(this);
         }
     }
 }

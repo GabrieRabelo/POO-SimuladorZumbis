@@ -1,7 +1,0 @@
-/**
- * Corote
- */
-public class Corote {
-
-    
-}

@@ -24,6 +24,7 @@ public class Jogo extends Application {
     public static final int NCOL = 10;
 
     public static Jogo jogo = null;
+    public Jogador jogador;
 
     private Random random;
     private Map<String, Image> imagens;
@@ -60,14 +61,13 @@ public class Jogo extends Application {
         // Armazena as imagens dos ObjetoCelulas
         Image aux = new Image("file:Imagens\\img1.jpg");
         imagens.put("Jogador", aux);
-        aux = new Image("file:Imagens\\img2.jpg");
+        aux = new Image("file:Imagens\\zumbi-bebado.gif");
         imagens.put("ZumbiBebado", aux);
-
-        aux = new Image("file:Imagens\\img8.jpg");
+        aux = new Image("file:Imagens\\zumbi-da-paz.gif");
         imagens.put("ZumbiDaPaz", aux);
-        aux = new Image("file:Imagens\\img6.jpg");
+        aux = new Image("file:Imagens\\corote.png");
         imagens.put("Corote", aux);
-        aux = new Image("file:Imagens\\back.jpg");
+        aux = new Image("file:Imagens\\glacial.png");
         imagens.put("Glacial", aux);
 
         // Armazena a imagem da celula nula
@@ -100,7 +100,6 @@ public class Jogo extends Application {
                 tab.add(cel, col, lin);
             }
         }
-
         
         objetoCelulas = new ArrayList<>(NLIN*NCOL);
         
@@ -110,7 +109,8 @@ public class Jogo extends Application {
             int lin = random.nextInt(NLIN);
             int col = random.nextInt(NCOL);
             if (this.getCelula(lin, col).getObjetoCelula() == null){
-                objetoCelulas.add(new Jogador(lin,col));
+                jogador = new Jogador(lin, col);
+                objetoCelulas.add(jogador);
                 posOk = true;
             }
         }
@@ -128,17 +128,53 @@ public class Jogo extends Application {
             }
         }
 
-        // Define o botao que avança a simulação
-        Button avanca = new Button("NextStep");
-        avanca.setOnAction(e->avancaSimulacao());
-        // Define outros botoes
-        
+        // Define os botoes que avançam a simulação
+        Button up = new Button("CIMA");
+        up.setOnAction(e -> {
+            Celula c = jogador.getCelula();
+            int lin = c.getLinha() - 1;
+            int col = c.getColuna();
+
+            jogador.atualizaPosicao(new Celula(lin, col));
+            avancaSimulacao();
+        });
+        Button down = new Button("BAIXO");
+        down.setOnAction(e -> {
+            Celula c = jogador.getCelula();
+            int lin = c.getLinha() + 1;
+            int col = c.getColuna();
+            
+            jogador.atualizaPosicao(new Celula(lin, col));
+            avancaSimulacao();   
+        });
+        Button left = new Button("ESQUERDA");
+        left.setOnAction(e -> {
+            Celula c = jogador.getCelula();
+            int lin = c.getLinha();
+            int col = c.getColuna() - 1;
+            
+            jogador.atualizaPosicao(new Celula(lin, col));
+            avancaSimulacao();
+        });
+        Button right = new Button("DIREITA");
+        right.setOnAction(e -> {
+            Celula c = jogador.getCelula();
+            int lin = c.getLinha();
+            int col = c.getColuna() + 1;
+            
+            jogador.atualizaPosicao(new Celula(lin, col));
+            avancaSimulacao();
+        });
+
         // Monta a cena e exibe
         HBox hb = new HBox(10);
         hb.setAlignment(Pos.CENTER);
         hb.setPadding(new Insets(25, 25, 25, 25));
         hb.getChildren().add(tab);
-        hb.getChildren().add(avanca);      
+        hb.getChildren().add(up);      
+        hb.getChildren().add(down);      
+        hb.getChildren().add(left);      
+        hb.getChildren().add(right);      
         
         Scene scene = new Scene(hb);
         primaryStage.setScene(scene);
@@ -148,15 +184,14 @@ public class Jogo extends Application {
     public void avancaSimulacao(){
         // Avança um passo em todos os objetoCelulas
         objetoCelulas.forEach(p->{
-            p.atualizaPosicao();
+            if (p instanceof ZumbiBebado) p.atualizaPosicao(jogador.getCelula());
+            else if (! (p instanceof Jogador)) p.atualizaPosicao();
             p.verificaEstado();
-            // p.influenciaVizinhos();
         });
         // Verifica se o jogo acabou
         long vivos = objetoCelulas
                     .stream()
                     .filter(p->!(p instanceof Zumbi))
-                    // .filter(p->p.estaVivo())
                     .count();
         if (vivos == 0){
             Alert msgBox = new Alert(AlertType.INFORMATION);
@@ -165,5 +200,8 @@ public class Jogo extends Application {
             msgBox.show();
             System.exit(0);
         }
+    }
+
+    public void anda() {
     }
 }

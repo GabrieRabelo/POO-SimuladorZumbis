@@ -3,6 +3,7 @@ public class Glacial extends Item {
 
     public Glacial(Jogador jogador) {
         super("Glacial");
+        this.codigo = 2;
 
         this.jogador = jogador;
     }

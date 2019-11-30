@@ -1,7 +1,6 @@
 public abstract class Item extends ObjetoCelula {
-    private Celula celula;
-    private String imagem;
     protected boolean ativo;
+    int codigo;
 
     public Item(String imagemInicial, int linInicial, int colInicial) {
         super(imagemInicial, linInicial, colInicial);
@@ -13,6 +12,10 @@ public abstract class Item extends ObjetoCelula {
         super(imagemInicial);
 
         this.ativo = false;
+    }
+
+    public int getCodigo() {
+        return this.codigo;
     }
 
     public void ativa() {
