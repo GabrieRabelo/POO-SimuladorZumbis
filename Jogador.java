@@ -4,6 +4,7 @@ import java.util.List;
 public class Jogador extends ObjetoCelula {
     private boolean imune;
     private boolean vivo;
+    private boolean ganhou;
     private List<Item> inventario;
 
     public Jogador(int linInicial, int colInicial) {
@@ -15,6 +16,8 @@ public class Jogador extends ObjetoCelula {
 
         this.inventario.add(new Corote(this));
         this.inventario.add(new Glacial(this));
+
+        this.ganhou = false;
     }
 
     public boolean pegaItem(Item i) {
@@ -63,6 +66,14 @@ public class Jogador extends ObjetoCelula {
         if (!this.imune) {
             vivo = false;
         }
+    }
+
+    public void ganha() {
+        this.ganhou = true;
+    }
+
+    public boolean ganhou() {
+        return this.ganhou;
     }
 
     @Override

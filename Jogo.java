@@ -19,10 +19,10 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class Jogo extends Application {
-    public static final int CELL_WIDTH = 35;
-    public static final int CELL_HEIGHT = 35;
-    public static final int NLIN = 10;
-    public static final int NCOL = 10;
+    public static final int CELL_WIDTH = 30;
+    public static final int CELL_HEIGHT = 30;
+    public static final int NLIN = 15;
+    public static final int NCOL = 15;
 
     public static final int MAX_ZOMBIES = 5;
 
@@ -67,7 +67,7 @@ public class Jogo extends Application {
         imagens = new HashMap<>();
 
         // Armazena as imagens dos ObjetoCelulas
-        Image aux = new Image("file:Imagens\\img1.jpg");
+        Image aux = new Image("file:Imagens\\jogador.jpeg");
         imagens.put("Jogador", aux);
         aux = new Image("file:Imagens\\zumbi-bebado.gif");
         imagens.put("ZumbiBebado", aux);
@@ -77,6 +77,8 @@ public class Jogo extends Application {
         imagens.put("Corote", aux);
         aux = new Image("file:Imagens\\glacial.png");
         imagens.put("Glacial", aux);
+        aux = new Image("file:Imagens\\telefone.jpeg");
+        imagens.put("Telefone", aux);
 
         // Armazena a imagem da celula nula
         imagens.put("Null", null);
@@ -91,7 +93,7 @@ public class Jogo extends Application {
 
         posOk = false;
         while(!posOk){
-            int lin = random.nextInt(3) + 7;
+            int lin = random.nextInt(3) + 12;
             int col = random.nextInt(NCOL);
             if (this.getCelula(lin, col).getObjetoCelula() == null){
                 objetoCelulas.add(new ZumbiBebado(lin,col));
@@ -128,7 +130,7 @@ public class Jogo extends Application {
         //cria e posiciona o jogador protagonista.
         boolean posOk = false;
         while(!posOk){
-            int lin = random.nextInt(NLIN);
+            int lin = random.nextInt(3);
             int col = random.nextInt(NCOL);
             if (this.getCelula(lin, col).getObjetoCelula() == null){
                 jogador = new Jogador(lin, col);
@@ -184,9 +186,6 @@ public class Jogo extends Application {
             this.usaItem(1);
         });
         
-        Button glacial = new Button("Glacial");
-        
-
         // Monta a cena e exibe
         HBox hb = new HBox(10);
         hb.setAlignment(Pos.CENTER);
@@ -198,7 +197,6 @@ public class Jogo extends Application {
         hb.getChildren().add(right);
 
         hb.getChildren().add(corote);  
-        hb.getChildren().add(glacial);    
         
         Scene scene = new Scene(hb);
         primaryStage.setScene(scene);
@@ -209,6 +207,9 @@ public class Jogo extends Application {
     }
 
     public void avancaSimulacao(){
+        if (roundCounter == 25) {
+            this.spawnTelefone();
+        }
         // Avança um passo em todos os objetoCelulas
         Celula celula = jogador.getCelula();
         for(ObjetoCelula o : objetoCelulas) {
@@ -217,7 +218,7 @@ public class Jogo extends Application {
 
                 if (roundCounter - c.getStart() >= 5) {
                     c.desativa();
-                    jogador.desimuniza();
+                    c.getCelula().setObjetoCelula(null);
                 }
             }
             else if (o instanceof ZumbiBebado) {
@@ -229,16 +230,19 @@ public class Jogo extends Application {
             o.verificaEstado();
         }
 
-        // Verifica se o jogo acabou
-        List<ObjetoCelula> estaAtivo = objetoCelulas
-                    .stream()
-                    .filter(p-> p instanceof Corote)
-                    .collect(Collectors.toList());
+        Button exit = new Button("Sair");
+
 
         if (!this.jogador.estaVivo()){
             Alert msgBox = new Alert(AlertType.INFORMATION);
             msgBox.setHeaderText("Fim de Jogo");
-            msgBox.setContentText("Todos os boboes morreram!");
+            msgBox.setContentText("Você perdeu a sua cerveja gelada");
+            msgBox.show();
+            System.exit(0);
+        } else if(this.jogador.ganhou()) {
+            Alert msgBox = new Alert(AlertType.INFORMATION);
+            msgBox.setHeaderText("Fim de Jogo");
+            msgBox.setContentText("Você chamou o Uber pra ir pra casa");
             msgBox.show();
             System.exit(0);
         }
@@ -271,6 +275,21 @@ public class Jogo extends Application {
                 }
             }
         }
+    }
+
+    public Telefone spawnTelefone() {
+        Telefone t = null;
+        boolean posOk = false;
+        while(!posOk){
+            int lin = random.nextInt(NLIN);
+            int col = random.nextInt(NCOL);
+            if (this.getCelula(lin, col).getObjetoCelula() == null){
+                t = new Telefone(lin, col, jogador);
+                objetoCelulas.add(t);
+                posOk = true;
+            }
+        }    
+        return t;
     }
 
     public void anda() {
