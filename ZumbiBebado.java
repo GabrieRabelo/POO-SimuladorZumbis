@@ -14,11 +14,16 @@ public class ZumbiBebado extends Zumbi{
         int newLin = oldLin;
         int newCol = oldCol;
 
-        if (linTo > oldLin) newLin = oldLin + 1;
-        else if (linTo < oldLin) newLin = oldLin - 1;
+        int distX = Math.abs(colTo- oldCol);
+        int distY = Math.abs(linTo - oldLin);
 
-        if (colTo > oldCol) newCol = oldCol + 1;            
-        else if (colTo < oldCol) newCol = oldCol - 1;
+        if (distX > distY) {
+            if (colTo > oldCol) newCol = oldCol + 1;       
+            else if (colTo < oldCol) newCol = oldCol - 1;    
+        } else {
+            if (linTo > oldLin) newLin = oldLin + 1;
+            else if (linTo < oldLin) newLin = oldLin - 1;
+        }
 
         if (newLin < 0) newLin = 0;
         if (newLin >= Jogo.NLIN) newLin = Jogo.NLIN-1;

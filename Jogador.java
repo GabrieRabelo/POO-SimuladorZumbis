@@ -13,10 +13,8 @@ public class Jogador extends ObjetoCelula {
 
         this.inventario = new ArrayList<>();
 
-        for(int i = 0; i < 2; i ++) {
-            this.inventario.add(new Corote());
-            this.inventario.add(new Glacial(this));
-        }
+        this.inventario.add(new Corote());
+        this.inventario.add(new Glacial(this));
     }
 
     public boolean pegaItem(Item i) {
@@ -38,6 +36,10 @@ public class Jogador extends ObjetoCelula {
         }
 
         return removido;
+    }
+
+    public List<Item> getInventario() {
+        return this.inventario;
     }
 
     public boolean estaImune(){

@@ -23,8 +23,12 @@ public class Jogo extends Application {
     public static final int NLIN = 10;
     public static final int NCOL = 10;
 
+    public static final int SPAWN_RATIO = 5;
+
     public static Jogo jogo = null;
     public Jogador jogador;
+
+    public static int roundCounter;
 
     private Random random;
     private Map<String, Image> imagens;
@@ -38,6 +42,7 @@ public class Jogo extends Application {
     public Jogo(){
         jogo = this;
         random = new Random();
+        roundCounter = 0;
     }
 
     public static void main(String[] args) {
@@ -78,6 +83,20 @@ public class Jogo extends Application {
         return imagens.get(id);
     }
 
+    public void spawnZumbiBebado() {
+        boolean posOk = false;
+
+        posOk = false;
+        while(!posOk){
+            int lin = random.nextInt(3) + 7;
+            int col = random.nextInt(NCOL);
+            if (this.getCelula(lin, col).getObjetoCelula() == null){
+                objetoCelulas.add(new ZumbiBebado(lin,col));
+                posOk = true;
+            }
+        }
+    }
+
     @Override
     public void start(Stage primaryStage) {
         // Carrega imagens
@@ -115,18 +134,8 @@ public class Jogo extends Application {
             }
         }
 
-        // Cria 5 Zumbis Bebados aleatorios
-        for(int i=0;i<5;i++){
-            posOk = false;
-            while(!posOk){
-                int lin = random.nextInt(NLIN);
-                int col = random.nextInt(NCOL);
-                if (this.getCelula(lin, col).getObjetoCelula() == null){
-                    objetoCelulas.add(new ZumbiBebado(lin,col));
-                    posOk = true;
-                }
-            }
-        }
+        // Cria 1 Zumbi Bebado aleatorio
+        spawnZumbiBebado();
 
         // Define os botoes que avançam a simulação
         Button up = new Button("CIMA");
@@ -166,6 +175,14 @@ public class Jogo extends Application {
             avancaSimulacao();
         });
 
+        Button corote = new Button("Corote");
+        corote.setOnAction(e -> {
+            this.usaItem(1);
+        });
+        
+        Button glacial = new Button("Glacial");
+        
+
         // Monta a cena e exibe
         HBox hb = new HBox(10);
         hb.setAlignment(Pos.CENTER);
@@ -174,14 +191,22 @@ public class Jogo extends Application {
         hb.getChildren().add(up);      
         hb.getChildren().add(down);      
         hb.getChildren().add(left);      
-        hb.getChildren().add(right);      
+        hb.getChildren().add(right);
+
+        hb.getChildren().add(corote);  
+        hb.getChildren().add(glacial);    
         
         Scene scene = new Scene(hb);
         primaryStage.setScene(scene);
+
+        // Scene scene2 = new Scene(hb2);
+        // primaryStage.setScene(scene2);
         primaryStage.show();
     }
 
     public void avancaSimulacao(){
+        Celula cel;
+
         // Avança um passo em todos os objetoCelulas
         objetoCelulas.forEach(p->{
             if (p instanceof ZumbiBebado) p.atualizaPosicao(jogador.getCelula());
@@ -200,6 +225,33 @@ public class Jogo extends Application {
             msgBox.show();
             System.exit(0);
         }
+
+        roundCounter ++;
+
+        if (roundCounter % SPAWN_RATIO == 0) {
+            spawnZumbiBebado();
+        }
+    }
+
+    private void usaItem(int cod) {
+        Item i = this.jogador.usaItem(cod);
+
+        if(i != null) {
+            if(cod == 1) {
+                boolean posOk = false;
+    
+                posOk = false;
+                while(!posOk){
+                    int lin = random.nextInt(NLIN);
+                    int col = random.nextInt(NCOL);
+                    if (this.getCelula(lin, col).getObjetoCelula() == null){
+                        objetoCelulas.add(new Corote(lin,col));
+                        posOk = true;
+                    }
+                }
+            }
+        }
+        
     }
 
     public void anda() {
