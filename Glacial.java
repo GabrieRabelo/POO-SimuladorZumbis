@@ -1,17 +1,19 @@
 public class Glacial extends Item {
-    Jogador jogador;
-
     public Glacial(Jogador jogador) {
-        super("Glacial");
+        super("Glacial", jogador);
         this.codigo = 2;
-
-        this.jogador = jogador;
     }
 
     @Override
     public void ativa() {
         this.ativo = true;
         this.jogador.imuniza();
+    }
+
+    @Override
+    public void influenciaVizinhos() {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override

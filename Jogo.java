@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -18,12 +19,14 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class Jogo extends Application {
-    public static final int CELL_WIDTH = 20;
-    public static final int CELL_HEIGHT = 20;
+    public static final int CELL_WIDTH = 35;
+    public static final int CELL_HEIGHT = 35;
     public static final int NLIN = 10;
     public static final int NCOL = 10;
 
-    public static final int SPAWN_RATIO = 5;
+    public static final int MAX_ZOMBIES = 5;
+
+    public static final int SPAWN_RATIO = 7;
 
     public static Jogo jogo = null;
     public Jogador jogador;
@@ -136,6 +139,7 @@ public class Jogo extends Application {
 
         // Cria 1 Zumbi Bebado aleatorio
         spawnZumbiBebado();
+        ZumbiBebado.setTarget(jogador.getCelula());
 
         // Define os botoes que avançam a simulação
         Button up = new Button("CIMA");
@@ -205,20 +209,33 @@ public class Jogo extends Application {
     }
 
     public void avancaSimulacao(){
-        Celula cel;
-
         // Avança um passo em todos os objetoCelulas
-        objetoCelulas.forEach(p->{
-            if (p instanceof ZumbiBebado) p.atualizaPosicao(jogador.getCelula());
-            else if (! (p instanceof Jogador)) p.atualizaPosicao();
-            p.verificaEstado();
-        });
+        Celula celula = jogador.getCelula();
+        for(ObjetoCelula o : objetoCelulas) {
+            if (o instanceof Corote) {
+                Corote c = (Corote)o;
+
+                if (roundCounter - c.getStart() >= 5) {
+                    c.desativa();
+                    jogador.desimuniza();
+                }
+            }
+            else if (o instanceof ZumbiBebado) {
+                if(roundCounter%2==0) o.atualizaPosicao(celula);
+                o.influenciaVizinhos();
+            }
+            else if (! (o instanceof Jogador)) o.atualizaPosicao();
+
+            o.verificaEstado();
+        }
+
         // Verifica se o jogo acabou
-        long vivos = objetoCelulas
+        List<ObjetoCelula> estaAtivo = objetoCelulas
                     .stream()
-                    .filter(p->!(p instanceof Zumbi))
-                    .count();
-        if (vivos == 0){
+                    .filter(p-> p instanceof Corote)
+                    .collect(Collectors.toList());
+
+        if (!this.jogador.estaVivo()){
             Alert msgBox = new Alert(AlertType.INFORMATION);
             msgBox.setHeaderText("Fim de Jogo");
             msgBox.setContentText("Todos os boboes morreram!");
@@ -239,19 +256,21 @@ public class Jogo extends Application {
         if(i != null) {
             if(cod == 1) {
                 boolean posOk = false;
-    
-                posOk = false;
                 while(!posOk){
                     int lin = random.nextInt(NLIN);
                     int col = random.nextInt(NCOL);
                     if (this.getCelula(lin, col).getObjetoCelula() == null){
-                        objetoCelulas.add(new Corote(lin,col));
+                        i.setCelula(this.getCelula(lin,col));
+                        this.getCelula(lin,col).setObjetoCelula(i);
+                        objetoCelulas.add(i);
+
+                        ZumbiBebado.setTarget(i.getCelula());
+                        i.setStart(roundCounter);
                         posOk = true;
                     }
                 }
             }
         }
-        
     }
 
     public void anda() {

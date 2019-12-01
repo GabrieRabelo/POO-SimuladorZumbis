@@ -38,5 +38,5 @@ public abstract class ObjetoCelula {
     // Define como o personagem influencia os vizinhos
     // Toda vez que chega em uma célula analisa os vizinhos
     // e influencia os mesmos
-    // public abstract void influenciaVizinhos();
+    public abstract void influenciaVizinhos();
 }

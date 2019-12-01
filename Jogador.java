@@ -13,7 +13,7 @@ public class Jogador extends ObjetoCelula {
 
         this.inventario = new ArrayList<>();
 
-        this.inventario.add(new Corote());
+        this.inventario.add(new Corote(this));
         this.inventario.add(new Glacial(this));
     }
 
@@ -31,6 +31,7 @@ public class Jogador extends ObjetoCelula {
         for(int i = 0; i < this.inventario.size(); i ++) {
             if (cod == this.inventario.get(i).getCodigo()) {
                 removido = this.inventario.remove(i);
+                removido.ativa();
                 break;
             }
         }
@@ -70,6 +71,12 @@ public class Jogador extends ObjetoCelula {
     @Override
     public void atualizaPosicao() {
         //talvez dependa da implementação das setas
+    }
+
+    @Override
+    public void influenciaVizinhos() {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override
