@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,8 +15,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Jogo extends Application {
@@ -24,13 +27,11 @@ public class Jogo extends Application {
     public static final int NLIN = 15;
     public static final int NCOL = 15;
 
-    public static final int MAX_ZOMBIES = 5;
-
     public static final int SPAWN_RATIO = 7;
 
     public static Jogo jogo = null;
     public Jogador jogador;
-
+    private javafx.scene.control.Button closeButton;
     public static int roundCounter;
 
     private Random random;
@@ -52,12 +53,10 @@ public class Jogo extends Application {
         launch(args);
     }
 
-    // Retorna um número aleatorio a partir do gerador unico
     public int aleatorio(int limite){
         return random.nextInt(limite);
     }
 
-    // Retorna a celula de uma certa linha,coluna
     public Celula getCelula(int nLin,int nCol){
         int pos = (nLin*NCOL)+nCol;
         return celulas.get(pos);
@@ -90,7 +89,6 @@ public class Jogo extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Carrega imagens
         loadImagens();
 
         // Configura a interface com o usuario
@@ -145,7 +143,7 @@ public class Jogo extends Application {
         ZumbiBebado.setTarget(jogador.getCelula());
 
         // Define os botoes que avançam a simulação
-        Button up = new Button("CIMA");
+        Button up = new Button("/\\");
         up.setOnAction(e -> {
             Celula c = jogador.getCelula();
             int lin = c.getLinha() - 1;
@@ -154,7 +152,7 @@ public class Jogo extends Application {
             jogador.atualizaPosicao(new Celula(lin, col));
             avancaSimulacao();
         });
-        Button down = new Button("BAIXO");
+        Button down = new Button("\\/");
         down.setOnAction(e -> {
             Celula c = jogador.getCelula();
             int lin = c.getLinha() + 1;
@@ -163,7 +161,7 @@ public class Jogo extends Application {
             jogador.atualizaPosicao(new Celula(lin, col));
             avancaSimulacao();   
         });
-        Button left = new Button("ESQUERDA");
+        Button left = new Button("<<");
         left.setOnAction(e -> {
             Celula c = jogador.getCelula();
             int lin = c.getLinha();
@@ -172,7 +170,7 @@ public class Jogo extends Application {
             jogador.atualizaPosicao(new Celula(lin, col));
             avancaSimulacao();
         });
-        Button right = new Button("DIREITA");
+        Button right = new Button(">>");
         right.setOnAction(e -> {
             Celula c = jogador.getCelula();
             int lin = c.getLinha();
@@ -191,26 +189,46 @@ public class Jogo extends Application {
         glacial.setOnAction(e -> {
             this.usaItem(2);
         });
-        
+
+        Button sair = new Button("Sair");
+        sair.setOnAction(e -> System.exit(0s));
+
+        Button reinicia = new Button("Reiniciar");
+        sair.setOnAction(e -> {
+
+        });
+
         // Monta a cena e exibe
+
+        GridPane tab2 = new GridPane();
+        tab2.setAlignment(Pos.CENTER);
+        tab2.setHgap(1);
+        tab2.setVgap(5);
+        tab2.setPadding(new Insets(25, 25, 25, 25));
+        tab2.add(up, 2, 0);
+        tab2.add(down,2,1);
+        tab2.add(left,1,1);
+        tab2.add(right, 3,1);
+        tab2.add(corote, 1,4);
+        tab2.add(glacial,2,4);
+        tab2.add(sair,1,7);
+
         HBox hb = new HBox(10);
         hb.setAlignment(Pos.CENTER);
-        hb.setPadding(new Insets(25, 25, 25, 25));
-        hb.getChildren().add(tab);
-        hb.getChildren().add(up);      
-        hb.getChildren().add(down);      
-        hb.getChildren().add(left);      
-        hb.getChildren().add(right);
-
-        hb.getChildren().add(corote);  
-        hb.getChildren().add(glacial);  
+        hb.setPadding(new Insets(25, 0, 25, 25));
+        hb.getChildren().addAll(tab, tab2);
         
         Scene scene = new Scene(hb);
         primaryStage.setScene(scene);
-
-        // Scene scene2 = new Scene(hb2);
-        // primaryStage.setScene(scene2);
         primaryStage.show();
+
+        Alert msgBox = new Alert(AlertType.WARNING);
+        msgBox.setHeaderText("Bem-vindo");
+        msgBox.setContentText("A cerveja da cidade acabou, você é o único que possui uma heineken bem gelada " +
+                "e precisa achar o celular e chamar o uber para ir pra casa antes que roubem de você. Boa Sorte!\n" +
+                "Os zumbies da paz não irão lhe seguir, mas é melhor fugir dos Zumbis bêbados.\n" +
+                "Você tem um corote e uma glacial para distrair os zumbies.");
+        msgBox.show();
     }
 
     public void avancaSimulacao(){
@@ -254,13 +272,11 @@ public class Jogo extends Application {
             msgBox.setHeaderText("Fim de Jogo");
             msgBox.setContentText("Você perdeu a sua cerveja gelada");
             msgBox.show();
-            System.exit(0);
         } else if(this.jogador.ganhou()) {
             Alert msgBox = new Alert(AlertType.INFORMATION);
             msgBox.setHeaderText("Fim de Jogo");
             msgBox.setContentText("Você chamou o Uber pra ir pra casa");
             msgBox.show();
-            System.exit(0);
         }
 
         roundCounter ++;
@@ -322,7 +338,7 @@ public class Jogo extends Application {
         } 
     }
 
-    public Telefone spawnTelefone() {
+    public void spawnTelefone() {
         Telefone t = null;
         boolean posOk = false;
         while(!posOk){
@@ -333,7 +349,13 @@ public class Jogo extends Application {
                 objetoCelulas.add(t);
                 posOk = true;
             }
-        }    
-        return t;
+        }
+    }
+
+    private void closeButtonAction(){
+        // get a handle to the stage
+        Stage stage = (Stage) closeButton.getScene().getWindow();
+        // do what you have to do
+        stage.close();
     }
 }
