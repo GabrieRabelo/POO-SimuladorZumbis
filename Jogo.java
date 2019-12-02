@@ -191,7 +191,7 @@ public class Jogo extends Application {
         });
 
         Button sair = new Button("Sair");
-        sair.setOnAction(e -> System.exit(0s));
+        sair.setOnAction(e -> System.exit(0));
 
         Button reinicia = new Button("Reiniciar");
         sair.setOnAction(e -> {
