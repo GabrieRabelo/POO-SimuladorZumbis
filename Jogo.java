@@ -88,20 +88,6 @@ public class Jogo extends Application {
         return imagens.get(id);
     }
 
-    public void spawnZumbiBebado() {
-        boolean posOk = false;
-
-        posOk = false;
-        while(!posOk){
-            int lin = random.nextInt(3) + 12;
-            int col = random.nextInt(NCOL);
-            if (this.getCelula(lin, col).getObjetoCelula() == null){
-                objetoCelulas.add(new ZumbiBebado(lin,col));
-                posOk = true;
-            }
-        }
-    }
-
     @Override
     public void start(Stage primaryStage) {
         // Carrega imagens
@@ -136,6 +122,21 @@ public class Jogo extends Application {
                 jogador = new Jogador(lin, col);
                 objetoCelulas.add(jogador);
                 posOk = true;
+            }
+        }
+
+        //cria e posiciona aleatoriamente o zumbi da paz
+        
+        for(int i = 0; i < 3; i ++) {
+            posOk = false;
+            while(!posOk){
+                int lin = random.nextInt(3) + 12;
+                int col = random.nextInt(NCOL);
+                if (this.getCelula(lin, col).getObjetoCelula() == null){
+                    ZumbiDaPaz zumbi = new ZumbiDaPaz(lin, col);
+                    objetoCelulas.add(zumbi);
+                    posOk = true;
+                }
             }
         }
 
@@ -185,6 +186,11 @@ public class Jogo extends Application {
         corote.setOnAction(e -> {
             this.usaItem(1);
         });
+
+        Button glacial = new Button("Glacial");
+        glacial.setOnAction(e -> {
+            this.usaItem(2);
+        });
         
         // Monta a cena e exibe
         HBox hb = new HBox(10);
@@ -197,6 +203,7 @@ public class Jogo extends Application {
         hb.getChildren().add(right);
 
         hb.getChildren().add(corote);  
+        hb.getChildren().add(glacial);  
         
         Scene scene = new Scene(hb);
         primaryStage.setScene(scene);
@@ -215,23 +222,32 @@ public class Jogo extends Application {
         for(ObjetoCelula o : objetoCelulas) {
             if (o instanceof Corote) {
                 Corote c = (Corote)o;
-
                 if (roundCounter - c.getStart() >= 5) {
                     c.desativa();
                     c.getCelula().setObjetoCelula(null);
                 }
-            }
-            else if (o instanceof ZumbiBebado) {
-                if(roundCounter%2==0) o.atualizaPosicao(celula);
-                o.influenciaVizinhos();
-            }
-            else if (! (o instanceof Jogador)) o.atualizaPosicao();
+            } else if (o instanceof Zumbi) {
+                if (!Zumbi.congelado()) {
+                    if (o instanceof ZumbiBebado) {
+                        if(roundCounter%2==0) o.atualizaPosicao(celula);
+                    } else if (o instanceof ZumbiDaPaz){
+                        if(roundCounter%2==0) o.atualizaPosicao();
+                    }    
+                }
 
+                o.influenciaVizinhos();
+            } else if(o instanceof Glacial) {
+                Glacial g = (Glacial)o;
+                if (roundCounter - g.getStart() >= 5) {
+                    g.desativa();
+                    g.getCelula().setObjetoCelula(null);
+                }
+            } else if (!(o instanceof Jogador)) {
+                o.atualizaPosicao();
+            };
+            
             o.verificaEstado();
         }
-
-        Button exit = new Button("Sair");
-
 
         if (!this.jogador.estaVivo()){
             Alert msgBox = new Alert(AlertType.INFORMATION);
@@ -254,6 +270,20 @@ public class Jogo extends Application {
         }
     }
 
+    public void spawnZumbiBebado() {
+        boolean posOk = false;
+
+        posOk = false;
+        while(!posOk){
+            int lin = random.nextInt(3) + 12;
+            int col = random.nextInt(NCOL);
+            if (this.getCelula(lin, col).getObjetoCelula() == null){
+                objetoCelulas.add(new ZumbiBebado(lin,col));
+                posOk = true;
+            }
+        }
+    }
+
     private void usaItem(int cod) {
         Item i = this.jogador.usaItem(cod);
 
@@ -268,13 +298,28 @@ public class Jogo extends Application {
                         this.getCelula(lin,col).setObjetoCelula(i);
                         objetoCelulas.add(i);
 
-                        ZumbiBebado.setTarget(i.getCelula());
+                        i.setStart(roundCounter);
+                        posOk = true;
+                    }
+                }
+            } else if (cod == 2) {
+                boolean posOk = false;
+                while(!posOk){
+                    int lin = random.nextInt(NLIN);
+                    int col = random.nextInt(NCOL);
+                    if (this.getCelula(lin, col).getObjetoCelula() == null){
+                        i.setCelula(this.getCelula(lin,col));
+                        this.getCelula(lin,col).setObjetoCelula(i);
+                        i.ativa();
+
+                        objetoCelulas.add(i);
+
                         i.setStart(roundCounter);
                         posOk = true;
                     }
                 }
             }
-        }
+        } 
     }
 
     public Telefone spawnTelefone() {
@@ -290,8 +335,5 @@ public class Jogo extends Application {
             }
         }    
         return t;
-    }
-
-    public void anda() {
     }
 }
