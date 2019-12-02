@@ -1,16 +1,8 @@
 public class ZumbiBebado extends Zumbi{
-    public static Celula target;
+
     public ZumbiBebado(int linInicial, int colInicial) {
         super("ZumbiBebado", linInicial, colInicial);
     }
-
-    public static Celula getTarget() {
-        return target;
-    }
-
-    public static void setTarget(Celula c) {
-        target = c;
-    } 
 
     @Override
     public void atualizaPosicao(Celula celula) {

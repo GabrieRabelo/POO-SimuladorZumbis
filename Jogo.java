@@ -31,7 +31,6 @@ public class Jogo extends Application {
 
     public static Jogo jogo = null;
     public Jogador jogador;
-    private javafx.scene.control.Button closeButton;
     public static int roundCounter;
 
     private Random random;
@@ -140,7 +139,6 @@ public class Jogo extends Application {
 
         // Cria 1 Zumbi Bebado aleatorio
         spawnZumbiBebado();
-        ZumbiBebado.setTarget(jogador.getCelula());
 
         // Define os botoes que avançam a simulação
         Button up = new Button("/\\");
@@ -181,23 +179,19 @@ public class Jogo extends Application {
         });
 
         Button corote = new Button("Corote");
-        corote.setOnAction(e -> {
-            this.usaItem(1);
-        });
+        corote.setOnAction(e -> this.usaItem(1));
 
         Button glacial = new Button("Glacial");
-        glacial.setOnAction(e -> {
-            this.usaItem(2);
-        });
+        glacial.setOnAction(e -> this.usaItem(2));
 
-        Button sair = new Button("Sair");
+        Button reiniciar = new Button("Reiniciar");
+        reiniciar.setOnAction(e -> {
+            primaryStage.close();
+            Platform.runLater( () -> new Jogo().start( new Stage() ) );
+        } );
+
+        Button sair = new Button ("Sair");
         sair.setOnAction(e -> System.exit(0));
-
-        Button reinicia = new Button("Reiniciar");
-        sair.setOnAction(e -> {
-
-        });
-
         // Monta a cena e exibe
 
         GridPane tab2 = new GridPane();
@@ -211,7 +205,8 @@ public class Jogo extends Application {
         tab2.add(right, 3,1);
         tab2.add(corote, 1,4);
         tab2.add(glacial,2,4);
-        tab2.add(sair,1,7);
+        tab2.add(reiniciar,1,10);
+        tab2.add(sair,2,10);
 
         HBox hb = new HBox(10);
         hb.setAlignment(Pos.CENTER);
@@ -226,8 +221,7 @@ public class Jogo extends Application {
         msgBox.setHeaderText("Bem-vindo");
         msgBox.setContentText("A cerveja da cidade acabou, você é o único que possui uma heineken bem gelada " +
                 "e precisa achar o celular e chamar o uber para ir pra casa antes que roubem de você. Boa Sorte!\n" +
-                "Os zumbies da paz não irão lhe seguir, mas é melhor fugir dos Zumbis bêbados.\n" +
-                "Você tem um corote e uma glacial para distrair os zumbies.");
+                "Corote: Imuniza o jogador\nGlacial Quente: Imobiliza os Zumbis");
         msgBox.show();
     }
 
@@ -240,9 +234,11 @@ public class Jogo extends Application {
         for(ObjetoCelula o : objetoCelulas) {
             if (o instanceof Corote) {
                 Corote c = (Corote)o;
+                celula = c.getCelula();
                 if (roundCounter - c.getStart() >= 5) {
                     c.desativa();
                     c.getCelula().setObjetoCelula(null);
+                    celula = jogador.getCelula();
                 }
             } else if (o instanceof Zumbi) {
                 if (!Zumbi.congelado()) {
@@ -313,7 +309,6 @@ public class Jogo extends Application {
                         i.setCelula(this.getCelula(lin,col));
                         this.getCelula(lin,col).setObjetoCelula(i);
                         objetoCelulas.add(i);
-
                         i.setStart(roundCounter);
                         posOk = true;
                     }
@@ -350,12 +345,5 @@ public class Jogo extends Application {
                 posOk = true;
             }
         }
-    }
-
-    private void closeButtonAction(){
-        // get a handle to the stage
-        Stage stage = (Stage) closeButton.getScene().getWindow();
-        // do what you have to do
-        stage.close();
     }
 }
